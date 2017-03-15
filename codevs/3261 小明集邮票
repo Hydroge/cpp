@@ -1,0 +1,42 @@
+//http://codevs.cn/problem/3261/
+
+#include <cstdio>
+#include <cstring>
+#include <cmath>
+#include <iostream>
+using namespace std;
+int n, m;
+long long f[31][6][130][2][1 << 5]; //f[已处理的张数][上一次所取的邮票][数字和][是否有相邻两邮票差为3][当前每种邮票是否被取到的状态(2进制)]
+long long dp(int i, int j, int used, int flag, int now) {
+	if (f[i][j][used][flag][now] != 0) {
+		return f[i][j][used][flag][now];
+	}
+	if (i == n && used <= m && flag == 1 && now == 31) {
+		return 1;
+	}
+	if (used > m || i > n) {
+		return 0;
+	}
+	int x;
+	long long t;
+	t = 0;
+	for (x = 1; x <= 5; x++) {
+		if (abs(x - j) == 3) {										//【节点1】
+			t += dp(i + 1, x, used + x, 1, now | 1 << (x - 1));
+		} else {
+			t += dp(i + 1, x, used + x, flag, now | 1 << (x - 1));
+		}
+	}
+	return f[i][j][used][flag][now] = t;
+}
+
+void work() {
+	memset(f, 0, sizeof(f));
+	cout << dp(0, 9, 0, 0, 0) << endl;								//假设第一次抽取之前的“第0次”抽取得到的邮票号码是9，那么第一次抽取在【节点1】的时候就不会受到干扰。当然，也可以大于9，但是不能小于9，否则数据会被干扰，从而WA。
+}
+
+int main() {
+	scanf("%d%d", &n, &m);
+	work();
+	return 0;
+}
