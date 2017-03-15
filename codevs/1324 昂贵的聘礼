@@ -1,0 +1,64 @@
+//http://codevs.cn/problem/1324/
+#include <iostream>
+using namespace std;
+const int INFTY = 0x3fffffff;
+
+int a[202][202], level[202], price[202];
+int v[202], d[202], n, m, ans;
+
+void init() {
+	for (int i = 0; i <= n; i++) {
+		for (int j = 0; j <= n; j++) {
+			a[i][j] = a[j][i] = INFTY;
+		}
+	}
+}
+
+int djk() {
+	for (int i = 1; i <= n; i++) {
+		d[i] = price[i];
+	}
+	for (int i = 1; i <= n; i++) {
+		int temp = INFTY, x;
+		for (int j = 1; j <= n; j++) {
+			if (v[j] == 0 and d[j] <= temp) {
+				temp = d[x = j];
+			}
+		}
+		v[x] = 1;
+		for (int j = 1; j <= n; j++) {
+			if (d[x] + a[x][j] < d[j] and v[j] == 0) {
+				d[j] = d[x] + a[x][j];
+			}
+		}
+	}
+	return d[1];
+}
+
+int main() {
+	cin >> m >> n;
+	ans = INFTY;
+	init();
+	for (int i = 1; i <= n; i++) {
+		int x, t, tp;
+		cin >> price[i] >> level[i] >> x;
+		for (int j = 1; j <= x; j++) {
+			cin >> t >> tp;
+			a[t][i] = tp;
+		}
+		a[0][1] = price[i];
+	}
+	for (int i = 1; i <= n; i++) {
+		int minlv = level[i];
+		for (int j = 1; j <= n; j++) {
+			if (level[j] - minlv > m or minlv > level[j]) {
+				v[j] = 1;
+			} else {
+				v[j] = 0;
+			}
+		}
+		int now = djk();
+		ans = min(ans, now);
+	}
+	cout << ans;
+}
