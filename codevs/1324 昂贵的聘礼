@@ -1,4 +1,5 @@
 //http://codevs.cn/problem/1324/
+
 #include <iostream>
 using namespace std;
 const int INFTY = 0x3fffffff;
